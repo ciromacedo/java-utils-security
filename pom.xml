@@ -7,13 +7,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.11</version>
+		<version>3.4.1</version>
 		<relativePath/>
 	</parent>
 
 	<groupId>org.ciro.macedo</groupId>
 	<artifactId>java-utils-security</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.5</version>
 	<packaging>jar</packaging>
 
 	<name>Security Utils</name>
@@ -29,26 +29,75 @@
 		<jjwt.version>0.12.6</jjwt.version>
 		<jakarta.servlet.version>6.0.0</jakarta.servlet.version>
 		<junit.version>5.10.1</junit.version>
+		<spring.version>6.2.1</spring.version>
+		<spring-security.version>6.4.2</spring-security.version>
+		<slf4j.version>2.0.16</slf4j.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.9.22.1</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.34</version>
+			<optional>true</optional>
+		</dependency>
+
 		<!-- JJWT - JSON Web Token -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
 			<version>${jjwt.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
 			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
 			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Spring Security Core - para autenticação e autorização -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring-security.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Spring Security Web - para utilitários web de segurança -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring-security.version}</version>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- Jakarta Servlet API -->
