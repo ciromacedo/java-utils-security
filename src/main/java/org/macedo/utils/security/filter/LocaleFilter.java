@@ -51,13 +51,20 @@ public class LocaleFilter extends OncePerRequestFilter {
     }
 
     private Locale resolveLocale(HttpServletRequest request) {
-        // 1. Prioridade: claim "idioma" do JWT
+        // 1. Prioridade: claim "idioma" do JWT.
+        //
+        // Usa parseClaimsIgnoringExpiration: o claim "idioma" e UI e nao
+        // depende do TTL do token. Verificar expiracao aqui geraria um WARN
+        // duplicado a cada request feita com token expirado (o
+        // JwtAuthenticationFilter ja loga essa decisao -- ver Filtro 1).
+        // Continua validando ASSINATURA do token (so ignora a expiracao),
+        // entao nao ha perda de garantia.
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
                 String token = authHeader.substring(7);
-                if (jwtUtil.isValid(token)) {
-                    Claims claims = jwtUtil.parseClaims(token);
+                Claims claims = jwtUtil.parseClaimsIgnoringExpiration(token);
+                if (claims != null) {
                     String idioma = claims.get("idioma", String.class);
                     if (idioma != null && !idioma.isBlank()) {
                         return Locale.forLanguageTag(idioma);

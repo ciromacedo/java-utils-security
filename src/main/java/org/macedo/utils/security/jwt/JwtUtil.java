@@ -82,7 +82,11 @@ public class JwtUtil {
             return ValidationResult.valid(claimsJws.getPayload());
 
         } catch (ExpiredJwtException e) {
-            logger.warning("Token expirado: " + e.getMessage());
+            // Expiração é fluxo normal: cliente vai pro endpoint de refresh.
+            // Mantemos no nível FINE para não poluir o log de produção --
+            // outros tipos de exception (assinatura, formato) continuam WARN
+            // porque indicam tentativa anômala ou bug.
+            logger.fine("Token expirado: " + e.getMessage());
             return ValidationResult.invalid("Token expirado");
         } catch (UnsupportedJwtException e) {
             logger.warning("Token não suportado: " + e.getMessage());
@@ -123,6 +127,45 @@ public class JwtUtil {
         }
         logger.warning("Tentativa de parsear token inválido: " + result.getErrorMessage());
         return null;
+    }
+
+    /**
+     * Parseia claims do token validando ASSINATURA mas ignorando expiração.
+     *
+     * <p>Útil para casos onde o conteúdo do token (ex.: claim "idioma" da
+     * UI) faz sentido mesmo após o access token expirar -- evita gerar
+     * WARN de "Token expirado" quando a expiração não é problema. A
+     * assinatura ainda é verificada, então não há perda de garantia de
+     * confidencialidade/integridade.</p>
+     *
+     * @param token JWT a ser parseado
+     * @return Claims se a assinatura for válida (mesmo com token expirado),
+     *         {@code null} se a assinatura for inválida ou o token mal formado
+     */
+    public Claims parseClaimsIgnoringExpiration(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            JwtParserBuilder parserBuilder = Jwts.parser()
+                    .verifyWith((SecretKey) key);
+            if (expectedIssuer != null) parserBuilder.requireIssuer(expectedIssuer);
+            if (expectedAudience != null) parserBuilder.requireAudience(expectedAudience);
+            return parserBuilder.build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            // Caso intencional: queremos os claims mesmo expirado.
+            // O jjwt anexa os claims na exception quando a expiração foi o
+            // único motivo de falha; assinatura/issuer/audience já passaram.
+            return e.getClaims();
+        } catch (Exception e) {
+            // Silencioso por design: este método é "best-effort" para
+            // leitura de claim em token possivelmente expirado. Outras
+            // falhas (assinatura, formato) ja serao logadas se o token for
+            // submetido para validate() em outro filtro.
+            return null;
+        }
     }
 
     /**
