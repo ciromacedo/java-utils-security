@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+  "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+  "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<!--
+  Baseline RELAXADO do SoloMapa — foco em problemas reais, não em formatação
+  cosmética nem Javadoc obrigatório. Pensado para "report-first": liga o
+  linter sem inundar o código existente de violações triviais.
+
+  Para apertar depois, adicione módulos de estilo (Indentation, LineLength
+  estrito, JavadocMethod, etc.) gradualmente.
+-->
+<module name="Checker">
+  <property name="severity" value="warning"/>
+  <property name="fileExtensions" value="java, properties, xml"/>
+
+  <!-- Arquivos não devem conter tab-vs-space misturado de forma problemática? -->
+  <module name="LineLength">
+    <property name="max" value="160"/>
+    <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+  </module>
+
+  <!-- Sem caracteres de espaço em branco no fim de linha não é forçado aqui -->
+
+  <module name="TreeWalker">
+    <!-- ── Imports: problemas reais, baixo ruído ─────────────────── -->
+    <module name="UnusedImports">
+      <property name="processJavadoc" value="true"/>
+    </module>
+    <module name="RedundantImport"/>
+    <module name="AvoidStarImport"/>
+
+    <!-- ── Bugs prováveis ────────────────────────────────────────── -->
+    <module name="EmptyStatement"/>
+    <module name="EqualsHashCode"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="SimplifyBooleanReturn"/>
+    <module name="StringLiteralEquality"/>
+    <module name="MissingSwitchDefault"/>
+    <module name="FallThrough"/>
+    <module name="DefaultComesLast"/>
+    <module name="IllegalCatch">
+      <property name="severity" value="info"/>
+    </module>
+    <module name="OneStatementPerLine"/>
+    <module name="MultipleVariableDeclarations"/>
+
+    <!-- ── Boas práticas de estrutura ────────────────────────────── -->
+    <module name="NeedBraces"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+    <module name="UpperEll"/>
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+  </module>
+</module>

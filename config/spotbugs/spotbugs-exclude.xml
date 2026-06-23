@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Filtro de exclusão do SpotBugs para o SoloMapa.
+
+  Suprime ruído conhecido e falsos positivos comuns em apps Spring Boot/JPA/
+  Lombok, mantendo os achados que realmente importam (NPE, recursos não
+  fechados, concorrência, segurança). Adicione <Match> conforme aparecerem
+  falsos positivos legítimos — sempre com um comentário explicando o porquê.
+-->
+<FindBugsFilter>
+  <!-- Entidades JPA e DTOs com Lombok expõem coleções/arrays por design.
+       EI_EXPOSE_REP / EI_EXPOSE_REP2 inundam esse tipo de código sem agregar. -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+  </Match>
+
+  <!-- Spring injeta dependências em campos; SpotBugs não enxerga o framework
+       e marca como possível null. Mantemos fora do ruído nesta fase. -->
+  <Match>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <!-- Código gerado por Lombok (builders, equals/hashCode) — não auditamos. -->
+  <Match>
+    <Source name="~.*\.java"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <!-- Não analisar classes de teste. -->
+  <Match>
+    <Class name="~.*Test(s)?$"/>
+  </Match>
+  <Match>
+    <Class name="~.*IntegrationTest$"/>
+  </Match>
+</FindBugsFilter>
