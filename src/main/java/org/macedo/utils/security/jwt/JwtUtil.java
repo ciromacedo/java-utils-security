@@ -14,7 +14,7 @@ import java.security.Key;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class JwtUtil {
+public final class JwtUtil {
 
     private static final Logger logger = Logger.getLogger(JwtUtil.class.getName());
     private static final String AUTH_HEADER = "Authorization";
@@ -209,7 +209,7 @@ public class JwtUtil {
     /**
      * Builder para criar instâncias de JwtUtil com validações configuráveis
      */
-    public static class Builder {
+    public static final class Builder {
         private final String base64Secret;
         private String expectedIssuer;
         private String expectedAudience;
@@ -264,7 +264,7 @@ public class JwtUtil {
     /**
      * Resultado da validação do token
      */
-    public static class ValidationResult {
+    public static final class ValidationResult {
         private final boolean valid;
         private final String errorMessage;
         private final Claims claims;

@@ -8,7 +8,7 @@ Biblioteca utilitária Maven para segurança (validação JWT, autenticação AP
 |---|---|
 | groupId | `org.ciro.macedo` |
 | artifactId | `java-utils-security` |
-| version | `1.0.8` |
+| version | `1.0.10` |
 | packaging | `jar` |
 | Java | 21 |
 | Parent | spring-boot-starter-parent 3.4.1 |
