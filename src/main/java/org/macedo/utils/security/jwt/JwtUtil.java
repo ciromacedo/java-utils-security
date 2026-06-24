@@ -1,6 +1,13 @@
 package org.macedo.utils.security.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.JwtParserBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -149,8 +156,12 @@ public final class JwtUtil {
         try {
             JwtParserBuilder parserBuilder = Jwts.parser()
                     .verifyWith((SecretKey) key);
-            if (expectedIssuer != null) parserBuilder.requireIssuer(expectedIssuer);
-            if (expectedAudience != null) parserBuilder.requireAudience(expectedAudience);
+            if (expectedIssuer != null) {
+                parserBuilder.requireIssuer(expectedIssuer);
+            }
+            if (expectedAudience != null) {
+                parserBuilder.requireAudience(expectedAudience);
+            }
             return parserBuilder.build()
                     .parseSignedClaims(token)
                     .getPayload();
